@@ -12,7 +12,9 @@ app = Flask(__name__)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model_path', type=str, default='weights/mnist_net.pth', help='path to the model weights')
+parser.add_argument('--port', type=int, default=5000, help='port to run the Flask app on')
 model_path = parser.parse_args().model_path
+model_port = parser.parse_args().port
 
 model = MNISTNet().to(device)
 # Load the model
@@ -64,4 +66,4 @@ def batch_predict():
     return jsonify({"predictions": predictions.tolist()})
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=model_port, debug=True)

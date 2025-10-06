@@ -5,13 +5,35 @@ import io
 
 
 def recognize_digit(image):
-    # Convert to PIL Image necessary if using the API method
-    image = Image.fromarray(image.astype('uint8'))
+    # Extract the composite image from the sketchpad dictionary
+    if isinstance(image, dict) and 'composite' in image:
+        image = image['composite']
+    
+    # Convert to PIL Image
+    if hasattr(image, 'astype'):
+        # If it's a numpy array
+        image = Image.fromarray(image.astype('uint8'))
+    else:
+        # If it's already a PIL Image
+        image = image
+    
+        # Convert to grayscale to ensure single channel
+    try:
+        if image.mode != 'L':
+            image = image.convert('L')
+    except Exception as e: # pass any exception
+        print(f"Error converting image to grayscale: {e}")
+        return -1
+
+    # revert image colors
+    image = Image.eval(image, lambda x: 255 - x)
+
     img_binary = io.BytesIO()
     image.save(img_binary, format='PNG')
     img_binary = img_binary.getvalue()
 
-    response = requests.post("http://127.0.0.1:5000/predict", data=img_binary, headers={"Content-Type": "application/octet-stream"})
+    # response = requests.post("http://mnist-api:5075/predict", data=img_binary, headers={"Content-Type": "application/octet-stream"}) # if using `docker network create mnist-network`
+    response = requests.post("http://api:5075/predict", data=img_binary, headers={"Content-Type": "application/octet-stream"}) # Use localhost if running docker-compose
     if response.ok:
         prediction = response.json().get("prediction", -1)
     else:

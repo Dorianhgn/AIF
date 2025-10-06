@@ -65,7 +65,7 @@ if __name__=='__main__':
 
   if not os.path.exists('runs'):
       os.makedirs('runs')
-  writer = SummaryWriter(f'runs/MNIST')
+  writer = SummaryWriter(f'runs/{exp_name}')
 
 # transforms
   transform = transforms.Compose(
@@ -92,7 +92,7 @@ if __name__=='__main__':
   
   if not os.path.exists('weights'):
       os.makedirs('weights')
-  torch.save(net.state_dict(), 'weights/mnist_net.pth')
+  torch.save(net.state_dict(), f'weights/{exp_name}_net.pth')
 
     #add embeddings to tensorboard
   perm = torch.randperm(len(trainset.data))
