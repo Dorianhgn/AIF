@@ -50,4 +50,4 @@ if __name__=='__main__':
                 outputs='label',
                 live=True,
                 description="Draw a number on the sketchpad to see the model's prediction.",
-                ).launch(debug=True, share=True);
+                ).launch(debug=True, share=True, server_name='0.0.0.0', server_port=7860);
